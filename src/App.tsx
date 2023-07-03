@@ -1,34 +1,39 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "./App.css"
+import { useEffect, useRef, useState } from "react"
+import InputField from "./Component/InputField"
+import { Todo } from "./model"
 
-function App() {
-  const [count, setCount] = useState(0)
+import TodoList from "./Component/TodoList"
+
+import { DragDropContext } from "react-beautiful-dnd"
+
+const App: React.FC = () => {
+  const [todo, setTodo] = useState<string>("")
+  const [todos, setTodos] = useState<Todo[]>([])
+  const [completedList, setCompletedList] = useState<Todo[]>([])
+
+  const handleAdd = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (todos) {
+      setTodos([...todos, { id: Date.now(), todo, isDone: false }])
+      setTodo("")
+    }
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <DragDropContext onDragEnd={() => {}}>
+      <div className='w-full h-screen text-center bg-[#2f74c0]'>
+        <span className='text-2xl text-white'>Taskify</span>
+
+        <InputField todo={todo} setTodo={setTodo} handleAdd={handleAdd} />
+        <TodoList
+          todos={todos}
+          setTodos={setTodos}
+          comletedList={completedList}
+          setCompletedList={setCompletedList}
+        />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </DragDropContext>
   )
 }
 
